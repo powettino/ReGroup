@@ -1,27 +1,15 @@
 ﻿using Parse;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Navigation;
 using ReGroup.Common;
-using System.Collections.ObjectModel;
 using ReGroup.Model;
-using System.Diagnostics;
 using ReGroup;
 using Windows.System.Display;
+using Windows.UI.Xaml.Media.Animation;
 
 // Il modello di applicazione vuota è documentato all'indirizzo http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -39,7 +27,7 @@ namespace ReGroup
         public static string ParseAppID = "hmayaW1keDwI17pq5sLBtgfj4zkGDxR6dF5oNeY2";
         public static string ParseDotNetKey = "8ZXwR8aNdDqhdoxuYaKjQWPVNe5pPzveKjmYQyHs";
 
-        public static Dictionary<string, FBFriend> FriendsOnMap;
+        public static System.Collections.Generic.Dictionary<string, FBFriend> FriendsOnMap;
 
         DisplayRequest req;       
 
@@ -70,7 +58,7 @@ namespace ReGroup
 
         void App_Resuming(object sender, object e)
         {
-            Debug.WriteLine("Entrato nel metodo resume");
+            //Debug.WriteLine("Entrato nel metodo resume");
             req.RequestActive();            
         }
 
@@ -89,14 +77,14 @@ namespace ReGroup
             }
 #endif
 
-            Frame rootFrame = Window.Current.Content as Frame;
+            Windows.UI.Xaml.Controls.Frame rootFrame = Window.Current.Content as Windows.UI.Xaml.Controls.Frame;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
             if (rootFrame == null)
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
+                rootFrame = new Windows.UI.Xaml.Controls.Frame();
 
                 SuspensionManager.RegisterFrame(rootFrame, "appFrame");
                 // TODO: change this value to a cache size that is appropriate for your application
@@ -147,9 +135,9 @@ namespace ReGroup
         /// </summary>
         /// <param name="sender">The object where the handler is attached.</param>
         /// <param name="e">Details about the navigation event.</param>
-        private void RootFrame_FirstNavigated(object sender, NavigationEventArgs e)
+        private void RootFrame_FirstNavigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
-            var rootFrame = sender as Frame;
+            var rootFrame = sender as Windows.UI.Xaml.Controls.Frame;
             rootFrame.ContentTransitions = this.transitions ?? new TransitionCollection() { new NavigationThemeTransition() };
             rootFrame.Navigated -= this.RootFrame_FirstNavigated;
         }

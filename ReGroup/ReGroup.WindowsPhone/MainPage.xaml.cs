@@ -686,7 +686,7 @@ namespace ReGroup
                 {
                     shared.AddRangeUniqueToList("with", App.FriendsOnMap.Keys.ToArray());
                 }
-                shared["location"] = new ParseGeoPoint(geo.Position.Latitude, geo.Position.Longitude);
+                shared["location"] = new ParseGeoPoint(geo.Position.Latitude, geo.Position.Longitude);             
                 await shared.SaveAsync();
                 //Debug.WriteLine("salvata la posizione");
             }
@@ -719,7 +719,7 @@ namespace ReGroup
                     //se la lista non lo conteneva lo aggiunge altrimenti si aggiorna solo la posizione
                     if (!App.FriendsOnMap.ContainsKey(id))
                     {
-                        FBFriend temp_friend = new FBFriend(user.Get<string>("name"), id, null)
+                        FBFriend temp_friend = new FBFriend(user.Get<string>("name"), id)
                         {
                             Geopoint = geo
                         };
@@ -854,67 +854,70 @@ namespace ReGroup
 
         private async void logout_Click(object sender, RoutedEventArgs e)
         {
-            if (ConnectionUtility.HasInternetAccess)
+            if (await UIUtility.showDialogWithButton("Do you really want to logout?", "Logout"))
             {
-                sharing = Share.off;
-                timer.Stop();
-                timer.Tick -= friend_Tick;
-                timer.Tick -= share_Tick;
-                showLoading(true);
-                try
+                if (ConnectionUtility.HasInternetAccess)
                 {
-                    ParseUser.CurrentUser["shared"] = false;
-                    await ParseUser.CurrentUser.SaveAsync();
-                    if (shared != null)
+                    sharing = Share.off;
+                    timer.Stop();
+                    timer.Tick -= friend_Tick;
+                    timer.Tick -= share_Tick;
+                    showLoading(true);
+                    try
                     {
-                        await shared.DeleteAsync();
-                        shared = null;
+                        ParseUser.CurrentUser["shared"] = false;
+                        await ParseUser.CurrentUser.SaveAsync();
+                        if (shared != null)
+                        {
+                            await shared.DeleteAsync();
+                            shared = null;
+                        }
+
+                        var fb = new FacebookClient();
+                        Uri uri = fb.GetLogoutUrl(new
+                            {
+                                access_token = ParseFacebookUtils.AccessToken,
+                                next = "https://www.facebook.com/connect/login_success.html"
+                            });
+                        var redirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().ToString();
+                        Uri endUri = new Uri(redirectUri, UriKind.Absolute);
+                        WebAuthenticationBroker.AuthenticateAndContinue(uri, endUri, null, WebAuthenticationOptions.None);
+
+                        await ParseUser.LogOutAsync();
+
+                        _geoLoc.PositionChanged -= geoLoc_PositionChanged;
+                        showLoading(false);
+                        facebookLogin.Visibility = Visibility.Visible;
+                        oscuramentoMap.Visibility = Visibility.Visible;
+                        map.MapElements.Clear();
+                        commandBar.IsEnabled = false;
+
+                    }
+                    catch (System.Net.WebException)
+                    {
+                        showLoading(false);
+                        toast.Duration = 5;
+                        toast.Message = "Connection lost";
                     }
 
-                    var fb = new FacebookClient();
-                    Uri uri = fb.GetLogoutUrl(new
-                        {
-                            access_token = ParseFacebookUtils.AccessToken,
-                            next = "https://www.facebook.com/connect/login_success.html"
-                        });
-                    var redirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().ToString();
-                    Uri endUri = new Uri(redirectUri, UriKind.Absolute);
-                    WebAuthenticationBroker.AuthenticateAndContinue(uri, endUri, null, WebAuthenticationOptions.None);
+                    sharePositionButton.Icon = new SymbolIcon(Symbol.ReShare);
+                    sharePositionButton.Label = "Share";
+                    handleFriendButton.IsEnabled = true;
+                    sharePositionButton.IsEnabled = true;
+                    if (ParseUser.CurrentUser == null)
+                    {
+                        commandBar.IsEnabled = false;
+                    }
 
-                    await ParseUser.LogOutAsync();
-
-                    _geoLoc.PositionChanged -= geoLoc_PositionChanged;
-                    showLoading(false);
-                    facebookLogin.Visibility = Visibility.Visible;
-                    oscuramentoMap.Visibility = Visibility.Visible;                    
-                    map.MapElements.Clear();
-                    commandBar.IsEnabled = false;
-
+                    //clearMapChildren();
+                    //qua si pulisce tutto per rimuovere anche la posizione dell'utente;
+                    map.Children.Clear();
+                    App.FriendsOnMap.Clear();
                 }
-                catch (System.Net.WebException)
+                else
                 {
-                    showLoading(false);
-                    toast.Duration = 5;
-                    toast.Message = "Connection lost";                    
+                    UIUtility.showDialog("No connection internet available", "No connection");
                 }
-
-                sharePositionButton.Icon = new SymbolIcon(Symbol.ReShare);
-                sharePositionButton.Label = "Share";
-                handleFriendButton.IsEnabled = true;
-                sharePositionButton.IsEnabled = true;
-                if (ParseUser.CurrentUser == null)
-                {
-                    commandBar.IsEnabled = false;
-                }
-
-                //clearMapChildren();
-                //qua si pulisce tutto per rimuovere anche la posizione dell'utente;
-                map.Children.Clear();
-                App.FriendsOnMap.Clear();
-            }
-            else
-            {
-                UIUtility.showDialog("No connection internet available", "No connection");
             }
         }
 

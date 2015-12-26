@@ -49,7 +49,7 @@
                   IsRightTapEnabled="False">
             <ListView.ItemTemplate>
                 <DataTemplate x:Name="GroupTemplate">
-                    <StackPanel x:Name="row" Margin="0,15,0,0" Orientation="Horizontal" Grid.Row="1" Height="Auto">
+                    <StackPanel x:Name="row" Margin="0,15,0,0" IsTapEnabled="false" Orientation="Horizontal" Grid.Row="1" Height="Auto">
                         <Border BorderBrush="LightCyan" 
                             Margin="10,0,0,0"
                             BorderThickness="3.0"  
@@ -66,7 +66,7 @@
                         <Grid x:Name="info" Margin="14.5,0,0,0" Width="280" Height="60">
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
-                                <RowDefinition/>
+                                <!--<RowDefinition/>-->
                             </Grid.RowDefinitions>
                             <TextBlock x:Name="textBlock" 
                                        Grid.Row="0"
@@ -82,12 +82,12 @@
                                        FontFamily="Global User Interface"
                                        Width="Auto"
                                        Style="{ThemeResource ListViewItemTextBlockStyle}" />
-                            <TextBlock Text="Sub" 
+                            <!--<TextBlock Text="{Binding SharedAt}" 
                                        Grid.Row="1"
                                        HorizontalAlignment="Left"
                                        VerticalAlignment="Center"
                                        TextAlignment="Center"
-                                       Style="{ThemeResource ListViewItemSubheaderTextBlockStyle}" />
+                                       Style="{ThemeResource ListViewItemSubheaderTextBlockStyle}" />-->
                         </Grid>
                     </StackPanel>
                 </DataTemplate>

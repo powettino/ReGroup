@@ -73,6 +73,8 @@ namespace ReGroup
                 {
                     if (u.Get<string>("fbId").Equals(f.Id))
                     {
+                        //var ora = (u["updateAt"] as string);
+                        //f.SharedAt = (ora.Remove(ora.IndexOf("."))).Replace("-", " ").Replace("T", " ");
                         onlineFriend.Add(f);
                         break;
                     }

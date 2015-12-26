@@ -36,41 +36,6 @@ namespace ReGroup.utility
             dialog.Commands.Add(new UICommand { Label = "Cancel", Id = 1 });
             var res = await dialog.ShowAsync();
             return ((int)res.Id) == 0;
-        }
-
-        public static void ShowToast(Grid layout, string message)
-        {
-            //var toastString = string.Format("<toast><visual version='1'><binding template='ToastText1'><text id='1'>{0}</text></binding></visual></toast>", message);
-            //var doc = new Windows.Data.Xml.Dom.XmlDocument();
-            //doc.LoadXml(toastString);
-            //var toast = new ToastNotification(doc);
-            //ToastNotificationManager.CreateToastNotifier().Show(toast);
-            Grid grid = new Grid();
-            grid.Width = 300;
-            grid.Height = 60;
-            grid.Background = new SolidColorBrush(Colors.Transparent);
-            grid.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
-            grid.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
-            grid.Margin = new Windows.UI.Xaml.Thickness(0, 15, 0, 0);
-
-            TextBlock text = new TextBlock();
-            text.Text = message;
-            text.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
-            text.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
-            text.FontSize = 20;
-
-            grid.Children.Add(text);
-
-            layout.Children.Add(grid);
-
-            DispatcherTimer t = new DispatcherTimer();
-            t.Interval = new TimeSpan(0, 0, 3);
-            t.Tick += (sender, args) =>
-                {
-                    layout.Children.Remove(grid);
-                    t.Stop();
-                };
-            t.Start();
-        }
+        }      
     }
 }

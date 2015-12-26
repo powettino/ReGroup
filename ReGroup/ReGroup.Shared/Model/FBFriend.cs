@@ -13,18 +13,18 @@ namespace ReGroup.Model
     public class FBFriend
     {
         private Uri pictureSquare;
-        private Uri pictureMap;
+        //private Uri pictureMap;
         private string id;
         private string name;
-        private Geopoint geo;
-        public FBFriend(string friendName, string friendId, Uri picture = null, Uri pictureMap = null)
+        private Geopoint geo;        
+
+        public FBFriend(string friendName, string friendId, Uri picture = null)
         {
             Name = friendName;
             Picture = picture;
-            PictureMap = pictureMap;
             Id = friendId;
             geo = null;
-        }        
+        }
 
         public override string ToString()
         {
@@ -52,8 +52,7 @@ namespace ReGroup.Model
             set
             {
                 id = value;
-                pictureSquare = new Uri(string.Format("https://graph.facebook.com/{0}/picture?type=square", id));
-                pictureMap = new Uri(string.Format("https://graph.facebook.com/{0}/picture?type=small&width=30&height=30", id));
+                pictureSquare = new Uri(string.Format("https://graph.facebook.com/{0}/picture?type=square", id));             
             }
         }
 
@@ -69,18 +68,6 @@ namespace ReGroup.Model
             }
         }
 
-        public Uri PictureMap
-        {
-            get
-            {
-                return pictureMap;
-            }
-            set
-            {
-                pictureMap = value;
-            }
-        }
-
         public Geopoint Geopoint
         {
             get
@@ -91,6 +78,6 @@ namespace ReGroup.Model
             {
                 geo = value;
             }
-        }
+        }     
     }
 }
