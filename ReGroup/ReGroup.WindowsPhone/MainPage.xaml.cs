@@ -3,36 +3,18 @@ using Parse;
 using ReGroup.Common;
 using ReGroup.utility;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Activation;
 using Windows.Devices.Geolocation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Security.Authentication.Web;
-using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using System.Collections.ObjectModel;
 using ReGroup.Model;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
 using Windows.UI;
-using Windows.Services.Maps;
-using Windows.UI.Text;
-using System.Net;
 using ReGroup.CustomControl;
 
 namespace ReGroup
@@ -79,7 +61,7 @@ namespace ReGroup
             //this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             //this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
 
-            App.FriendsOnMap = new Dictionary<string, FBFriend>();
+            App.FriendsOnMap = new System.Collections.Generic.Dictionary<string, FBFriend>();
 
             timer = new DispatcherTimer()
             {
@@ -120,19 +102,19 @@ namespace ReGroup
         /// per mantenere la visualizzazione il piu' possibile
         private void updateMapFriendPosition()
         {
-            Dictionary<string, Geopoint> existing = new Dictionary<string, Geopoint>();
-            HashSet<string> removed = new HashSet<string>();
-            HashSet<string> moved = new HashSet<string>();
+            var existing = new System.Collections.Generic.Dictionary<string, Geopoint>();
+            var removed = new System.Collections.Generic.HashSet<string>();
+            var moved = new System.Collections.Generic.HashSet<string>();
 
             ///In tutti i figli della mappa si cerca gli ellissi che sono gli amici
             ///per eventualmente muoverli senza vedere l'effetto flicker
             foreach (var element in map.Children.ToList())
             {
-                if (element is Ellipse)
+                if (element is Windows.UI.Xaml.Shapes.Ellipse)
                 {
                     //Se esiste si recupera l'oggetto e la posizione e si sposta il figlio della mappa
                     // si aggiunge l'elemento alla collezione di supporto
-                    Ellipse pin = element as Ellipse;
+                    Windows.UI.Xaml.Shapes.Ellipse pin = element as Windows.UI.Xaml.Shapes.Ellipse;
                     if (App.FriendsOnMap.ContainsKey(pin.Tag as string))
                     {
                         FBFriend friend = App.FriendsOnMap[pin.Tag as string];
@@ -180,7 +162,7 @@ namespace ReGroup
                             //fence.Image = new BitmapImage(element.Picture);
                             //fence.Id = element.Id;
 
-                            Ellipse fence = new Ellipse()
+                            var fence = new Windows.UI.Xaml.Shapes.Ellipse()
                             {
                                 Width = 30,
                                 Height = 30,
@@ -191,7 +173,7 @@ namespace ReGroup
                             };
                             fence.Fill = new ImageBrush()
                             {
-                                ImageSource = new BitmapImage(element.Picture),
+                                ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(element.Picture),
                                 Stretch = Stretch.Uniform
                             };
                             fence.Tapped += fence_Tapped;
@@ -200,7 +182,7 @@ namespace ReGroup
                             toast.Duration = 2;
                             toast.Message = "Added " + element.Name;
                             MapControl.SetLocation(fence, element.Geopoint);
-                            MapControl.SetNormalizedAnchorPoint(fence, new Point(0.5, 0));
+                            MapControl.SetNormalizedAnchorPoint(fence, new Windows.Foundation.Point(0.5, 0));
                             //map.Center = element.Geopoint;
                         }
                     }
@@ -218,7 +200,7 @@ namespace ReGroup
                 user.SetRadius(userGeo.Position.Latitude, map.ZoomLevel);
                 map.Children.Add(user);
                 MapControl.SetLocation(user, userGeo);
-                MapControl.SetNormalizedAnchorPoint(user, new Point(0.5, 1.0));              
+                MapControl.SetNormalizedAnchorPoint(user, new Windows.Foundation.Point(0.5, 1.0));              
             }
             else
             {
@@ -239,7 +221,7 @@ namespace ReGroup
             // invocare il gps e utilizzare quella visto che l'aggiornamento viene fatto sulla soglia di movimento
             if (currentCenterMap == null && userGeo != null)
             {
-                 map.TrySetViewAsync(userGeo, _defaultZoom);
+                await map.TrySetViewAsync(userGeo, _defaultZoom);
                 //centered = true;
             }
            
@@ -249,8 +231,8 @@ namespace ReGroup
         //si apre o chiude il dettaglio utente
         async void fence_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            string clickedId = ((sender as Ellipse).Tag) as string;
-            string name = ((sender as Ellipse).Name) as string;
+            string clickedId = ((sender as Windows.UI.Xaml.Shapes.Ellipse).Tag) as string;
+            string name = ((sender as Windows.UI.Xaml.Shapes.Ellipse).Name) as string;
             if (App.FriendsOnMap.ContainsKey(clickedId))
             {
                 bool opened = false;
@@ -271,10 +253,10 @@ namespace ReGroup
                 {
                     //si fa reverse geocoding della locazione
                     Geopoint point = App.FriendsOnMap[clickedId].Geopoint;
-                    MapLocationFinderResult locRes = await MapLocationFinder.FindLocationsAtAsync(point);
-                    if (locRes.Status == MapLocationFinderStatus.Success)
+                    var locRes = await Windows.Services.Maps.MapLocationFinder.FindLocationsAtAsync(point);
+                    if (locRes.Status == Windows.Services.Maps.MapLocationFinderStatus.Success)
                     {
-                        MapAddress add = locRes.Locations[0].Address;
+                        var add = locRes.Locations[0].Address;
                         var externalBox = createLocationBox(name, clickedId, add.Country, add.Region, add.Town, add.Street, add.StreetNumber, new Geopoint(new BasicGeoposition()
                             {
                                 Longitude = point.Position.Longitude,
@@ -283,7 +265,7 @@ namespace ReGroup
                         );
                         map.Children.Add(externalBox);
                         MapControl.SetLocation(externalBox, point);
-                        MapControl.SetNormalizedAnchorPoint(externalBox, new Point(0.5, 1));
+                        MapControl.SetNormalizedAnchorPoint(externalBox, new Windows.Foundation.Point(0.5, 1));
 
 
                         DispatcherTimer clearFence = new DispatcherTimer();
@@ -314,7 +296,7 @@ namespace ReGroup
             nome.VerticalAlignment = VerticalAlignment.Center;
             nome.Padding = new Thickness(5, 5, 5, 7);
             nome.FontSize = 24;
-            nome.FontWeight = FontWeights.Bold;
+            nome.FontWeight = Windows.UI.Text.FontWeights.Bold;
 
             TextBlock nazione = new TextBlock();
             nazione.Name = "country" + id;
@@ -384,17 +366,14 @@ namespace ReGroup
         {
             Geopoint point = args.Position.Coordinate.Point;
 
-            Debug.WriteLine(System.DateTime.Now + ": cambiato di posizione con argomenti " + point.Position.Latitude + " - " + point.Position.Longitude);
-            //if (currentCenterMap != null && (point.Position.Latitude != currentCenterMap.Position.Latitude || point.Position.Longitude != currentCenterMap.Position.Longitude))
-            //{
+            //Debug.WriteLine(System.DateTime.Now + ": cambiato di posizione con argomenti " + point.Position.Latitude + " - " + point.Position.Longitude);
 
             //Viene eseguito senza await perche' anche se qualche posizione viene saltata si sta in un intorno accettabile
             shareUserPosition(point);
-            //}
 
             ///si esegue l'aggiornamento della mappa utilizzando il dispatcher poiche' la UI viene eseguita da un thread diverso
             ///da quello che esegue il position changed (che dovrebbe essere in background)
-            await this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, new DispatchedHandler(
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, new Windows.UI.Core.DispatchedHandler(
                 async () =>
                 {
                     await updateMapUserPosition(point);
@@ -421,7 +400,7 @@ namespace ReGroup
         }
 
         //quando il webauthenticationbroken restituisce il risultato
-        public async void ContinueWebAuthentication(WebAuthenticationBrokerContinuationEventArgs args)
+        public async void ContinueWebAuthentication(Windows.ApplicationModel.Activation.WebAuthenticationBrokerContinuationEventArgs args)
         {
             try
             {
@@ -438,7 +417,8 @@ namespace ReGroup
             switch (result.ResponseStatus)
             {
                 case WebAuthenticationStatus.ErrorHttp:
-                    Debug.WriteLine("Connection error");
+                    UIUtility.showDialog("Connection error");
+                    //Debug.WriteLine("Connection error");
                     break;
                 case WebAuthenticationStatus.Success:
                     Uri uri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
@@ -449,7 +429,7 @@ namespace ReGroup
                         var pattern = string.Format("{0}#access_token={1}&expires_in={2}", uri, "(?<access_token>.+)",
                           "(?<expires_in>.+)");
 
-                        var match = Regex.Match(result.ResponseData, pattern);
+                        var match = System.Text.RegularExpressions.Regex.Match(result.ResponseData, pattern);
 
                         var access_token = match.Groups["access_token"];
                         var expires_in = match.Groups["expires_in"];
@@ -488,7 +468,7 @@ namespace ReGroup
                 case WebAuthenticationStatus.UserCancel:
                     if (ParseUser.CurrentUser != null)
                     {
-                        Debug.WriteLine("Operation aborted");
+                        //Debug.WriteLine("Operation aborted");
                         UIUtility.showDialog("Operation aborted from user", "Error");
                     }
                     break;
@@ -498,13 +478,13 @@ namespace ReGroup
         }
 
         /// Richiamato quando la pagina sta per essere visualizzata in un Frame.
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
             //Debug.WriteLine("Sono entrato nel navHelper di main");
             this.navigationHelper.OnNavigatedTo(e);
 
             ///se e' una pagina nuova 
-            if (e.NavigationMode == NavigationMode.New)
+            if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.New)
             {
                 commandBar.IsEnabled = false;
                 //se non esiste un account loggato mostro il pulsante di login
@@ -528,7 +508,7 @@ namespace ReGroup
                 }
             }
             //se stiamo tornando dalla navigazione tra pagine
-            else if (e.NavigationMode == NavigationMode.Back)
+            else if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Back)
             {
                 ///se non c'e' niente di selezionato pulisco l'interfaccia e stoppo i timer
                 sharePositionButton.IsEnabled = App.FriendsOnMap.Count != 0 ? false : true;
@@ -552,7 +532,7 @@ namespace ReGroup
                     }
                     if (currentCenterMap != null)
                     {
-                        map.TrySetViewAsync(currentCenterMap);
+                       await map.TrySetViewAsync(currentCenterMap);
                     }
                    
                     showLoading(false);
@@ -574,7 +554,7 @@ namespace ReGroup
         }
 
         ///questo metodo viene chiamato quando si lascia questa pagina, e quindi viene chiamato anche quando va in sospensione!!!
-        protected async override void OnNavigatedFrom(NavigationEventArgs e)
+        protected async override void OnNavigatedFrom(Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedFrom(e);
             //Debug.WriteLine("Ritorno ora da Navigate");
@@ -590,7 +570,7 @@ namespace ReGroup
                 handleFriendButton.IsEnabled = true;
             }
             //se procede in avanti sta andando in sospensione!
-            if (e.NavigationMode == NavigationMode.Forward)
+            if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Forward)
             {
                 clearMapChildren();
                 App.FriendsOnMap.Clear();
@@ -687,7 +667,7 @@ namespace ReGroup
                     }
                 }
             }
-            catch (WebException we)
+            catch (System.Net.WebException)
             {
                 showLoading(false);
                 toast.Duration = 5;
@@ -717,9 +697,9 @@ namespace ReGroup
             try
             {
                 //si cerca tutti gli amici che hanno aggiunto l'utente  
-                IEnumerable<ParseObject> queryResult = await ParseObject.GetQuery("SharedPoints").WhereEqualTo("with", ParseUser.CurrentUser["fbId"]).FindAsync();
+                var queryResult = await ParseObject.GetQuery("SharedPoints").WhereEqualTo("with", ParseUser.CurrentUser["fbId"]).FindAsync();
 
-                HashSet<string> tempHash = new HashSet<string>();
+               var tempHash = new System.Collections.Generic.HashSet<string>();
                 foreach (var element in queryResult)
                 {
                     //si recupera l;oggetto utente (amico)
@@ -774,7 +754,7 @@ namespace ReGroup
                     clearMapChildren();
                 }
             }
-            catch (WebException)
+            catch (System.Net.WebException)
             {
                 //Debug.WriteLine("Errore nel tick di condivisione");
                 timer.Stop();
@@ -803,9 +783,9 @@ namespace ReGroup
 
                 //Debug.WriteLine("Cerco punto da aggiungere");
                 //si cerca tutte le posizione degli amici aggiunti
-                IEnumerable<ParseObject> queryResult = await ParseObject.GetQuery("SharedPoints").WhereContainedIn("user", App.FriendsOnMap.Keys.ToArray()).FindAsync();
+                var queryResult = await ParseObject.GetQuery("SharedPoints").WhereContainedIn("user", App.FriendsOnMap.Keys.ToArray()).FindAsync();
 
-                HashSet<string> tempHash = new HashSet<string>();
+                var tempHash = new System.Collections.Generic.HashSet<string>();
                 foreach (var element in queryResult)
                 {
                     if (App.FriendsOnMap.ContainsKey(element.Get<string>("user")))
@@ -911,7 +891,7 @@ namespace ReGroup
                     commandBar.IsEnabled = false;
 
                 }
-                catch (WebException)
+                catch (System.Net.WebException)
                 {
                     showLoading(false);
                     toast.Duration = 5;

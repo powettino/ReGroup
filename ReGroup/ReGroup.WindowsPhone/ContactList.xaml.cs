@@ -1,38 +1,20 @@
 ﻿using ReGroup.Common;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Facebook;
 using Parse;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
 using ReGroup.Model;
 using Newtonsoft.Json;
 using Facebook.Client.Controls;
-using System.ComponentModel;
-using System.Collections;
-using Windows.UI;
 using ReGroup.utility;
-using System.Net;
 
 namespace ReGroup
 {
     /// <summary>
     /// Pagina vuota che può essere utilizzata autonomamente oppure esplorata all'interno di un frame.
     /// </summary>
-    public sealed partial class ContactList : Page
+    public sealed partial class ContactList : Windows.UI.Xaml.Controls.Page
     {
 
         public ContactList()
@@ -46,7 +28,7 @@ namespace ReGroup
         /// </summary>
         /// <param name="e">Dati dell'evento in cui vengono descritte le modalità con cui la pagina è stata raggiunta.
         /// Questo parametro viene in genere utilizzato per configurare la pagina.</param>
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
             commandBar.IsEnabled = false;
             try
@@ -71,20 +53,20 @@ namespace ReGroup
             Frame.GoBack();
         }
 
-        private async Task FriendRequestAsync()
+        private async System.Threading.Tasks.Task FriendRequestAsync()
         {
             FacebookClient fbClient = new FacebookClient(ParseFacebookUtils.AccessToken);
 
             //si carica la lista degli amici che ha autorizzato l'app
             dynamic fbFriends = await fbClient.GetTaskAsync("/me/friends");
             var fbFriendsJson = ((object)fbFriends.data).ToString();
-            var friendsCollection = JsonConvert.DeserializeObject<List<FBFriend>>(fbFriendsJson);            
+            var friendsCollection = JsonConvert.DeserializeObject<System.Collections.Generic.List<FBFriend>>(fbFriendsJson);            
 
             var queryOnlineUser = await ParseUser.Query.WhereEqualTo("shared", true).WhereNotEqualTo("username", ParseUser.CurrentUser.Username).OrderByDescending("fbId").FindAsync();
             //var queryOnlineUser = await ParseUser.Query.WhereEqualTo("shared", true).OrderByDescending("fbId").FindAsync();
             
             //Si fa un controllo incrociato con la lista di fb e la lista di parse
-            List<FBFriend> onlineFriend = new List<FBFriend>();
+           var onlineFriend = new System.Collections.Generic.List<FBFriend>();
             foreach (var f in friendsCollection) 
             {
                 foreach (var u in queryOnlineUser)
