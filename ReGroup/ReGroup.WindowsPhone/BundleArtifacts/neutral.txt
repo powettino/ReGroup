@@ -1,0 +1,4 @@
+MainPackage=C:\project_wp\ReGroup\ReGroup\ReGroup.WindowsPhone\bin\Release\ReGroup.WindowsPhone_1.1.0.8_Bundle\ReGroup.WindowsPhone_1.1.0.8_AnyCPU.appx
+SymbolPackage=C:\project_wp\ReGroup\ReGroup\ReGroup.WindowsPhone\AppPackages\ReGroup.WindowsPhone_1.1.0.8_Test\ReGroup.WindowsPhone_1.1.0.8_AnyCPU.appxsym
+ResourcePack=C:\project_wp\ReGroup\ReGroup\ReGroup.WindowsPhone\bin\Release\ReGroup.WindowsPhone_1.1.0.8_Bundle\ReGroup.WindowsPhone_1.1.0.8_scale-100.appx
+ResourcePack=C:\project_wp\ReGroup\ReGroup\ReGroup.WindowsPhone\bin\Release\ReGroup.WindowsPhone_1.1.0.8_Bundle\ReGroup.WindowsPhone_1.1.0.8_scale-140.appx
