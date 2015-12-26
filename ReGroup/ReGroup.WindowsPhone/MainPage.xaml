@@ -1,0 +1,69 @@
+﻿<Page
+    x:Class="ReGroup.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ReGroup"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toastinet="using:Toastinet"
+    mc:Ignorable="d"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
+    NavigationCacheMode="Required"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid x:Name="centralPanel" HorizontalAlignment="Stretch"               
+                Margin="0,0,0,0"
+                Background="#007272"
+                VerticalAlignment="Stretch" >
+
+        <Maps:MapControl x:Name="map" 
+                         MapServiceToken="nKlxtUTaoVtNOK4sueAA" 
+                         Margin="0,0,0,0"  
+                         IsDoubleTapEnabled="false"                        
+                         IsHoldingEnabled="False" 
+                         IsRightTapEnabled="False"                      
+                         MapHolding="map_MapHolding"
+                         ZoomLevelChanged="map_ZoomLevelChanged"                      
+                         Visibility="Visible">
+        </Maps:MapControl>
+
+        <toastinet:Toastinet x:Name="toast" 
+                             Queued="True"
+                             Canvas.ZIndex="1" 
+                             VerticalAlignment="Top" 
+                             Background="#AA008b8b" 
+                             Margin="0,15,0,0" 
+                             Height="Auto" 
+                             AnimationType="Vertical" 
+                             Duration="3" 
+                             FontSize="18" 
+                             TextHAlignment="Center"                      
+                             TextWrapping="Wrap"/>
+
+        <Button x:Name="centerMap" Margin="0,0,0,15" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200" Height="55" Background="#AA008b8b" Content="Center Map" Visibility="Visible" Click="centerMap_Click"/>
+        <Canvas Background="Black" Opacity="0.5" Visibility="Collapsed" x:Name="oscuramentoMap"/>
+        <Button x:Name="facebookLogin" Background="#3b5998" Content="Login on Facebook" Click="OnLoginClicked" Visibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Height="82" Width="200" />
+        <Border x:Name="progressContainer" BorderBrush="#FF000000" BorderThickness="1,1,1,1" CornerRadius="45,45,45,45" Height="90" Width="90"  Background="#DCE0FFFF" Visibility="Collapsed">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible" Background="Transparent">
+                <ProgressRing x:Name="loadingRing" IsEnabled="False" Height="80" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent"/>
+            </Grid>
+        </Border>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar Background="#007272" 
+                    x:Name="commandBar"
+                    IsEnabled="false"
+                    Foreground="White">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton x:Name="handleFriendButton"  Label="Friends"   IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" Click="addFriendButton_Click" Icon="ContactPresence" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                <AppBarButton x:Name="sharePositionButton" Label="Share"  HorizontalAlignment="Center" VerticalAlignment="Center" Icon="ReShare" Margin="20,0,20,0" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" Click="sharePositionButton_Click"/>
+                <AppBarButton x:Name="logout" Label="Logout" Visibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" IsRightTapEnabled="False" IsDoubleTapEnabled="False" IsHoldingEnabled="False" Click="logout_Click">
+                    <AppBarButton.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icon/Logout-32.png"></BitmapIcon>
+                    </AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>

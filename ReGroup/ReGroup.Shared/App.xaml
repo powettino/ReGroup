@@ -1,0 +1,26 @@
+﻿<Application
+    x:Class="ReGroup.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
+    xmlns:local="using:ReGroup">
+    <!--<Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Default">
+
+                    --><!--After selection - B.ackground--><!--
+                    <SolidColorBrush x:Key="ListViewItemSelectedBackgroundThemeBrush" Color="Yellow"></SolidColorBrush>
+
+                    --><!--When pointer hovers over an item - Background--><!--
+                    <SolidColorBrush x:Key="ListViewItemPointerOverBackgroundThemeBrush" Color="Red"></SolidColorBrush>
+
+                    --><!--When the item is selected (first few milliseconds) - Background--><!--
+                    <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="Green"></SolidColorBrush>
+
+                    --><!--When the item is selected (first few milliseconds) - Border--><!--
+                    <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="Black"></SolidColorBrush>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>-->
+</Application>
